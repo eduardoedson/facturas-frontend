@@ -110,16 +110,16 @@ const ProdutosView = () => {
         <table>
           <thead>
             <tr>
-              <th>Código</th>
-              <th>Cliente</th>
+              <th>Nome</th>
+              <th>Valor</th>
             </tr>
           </thead>
           <tbody>
             {produtos.map(produto => {
               return (
                 <tr key={produto.id}>
-                  <td>{produto.codigo}</td>
                   <td>{produto.nome}</td>
+                  <td>R$ {produto.valor}</td>
                   <td className="options">
                     <span className="btn altBtn" onClick={() => ativarAlteracao(produto)}>Alterar</span>
                     <span className="btn delBtn" onClick={() => deletarProduto(produto.id)}>Excluir</span>
