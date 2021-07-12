@@ -1,0 +1,63 @@
+.container {
+  margin: 7px;
+}
+
+.container h1 {
+  color: rgb(30, 136, 100);
+  font-weight: 700;
+}
+
+.form {
+  display: flex;
+  flex-direction: row;
+  gap: 25px;
+}
+
+.inputLabel {
+  font-weight: bold;
+}
+
+.input {
+  padding: 3px 1px;
+}
+
+.btn {
+  display: flex;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 4px;
+  border-color: white;
+}
+
+.addBtn {
+  background-color: green;
+}
+
+.altBtn {
+  background-color: blue;
+}
+
+.delBtn {
+  background-color: red;
+}
+
+.addBtn:hover, .altBtn:hover, .delBtn:hover {
+  cursor: pointer;
+  filter: opacity(0.9);
+}
+
+.erroMsg {
+  font-weight: bold;
+  font-size: 23px;
+  color: red;
+}
+
+table, table thead tr th, table tbody tr td {
+  padding: 4px;
+}
+
+.options {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
