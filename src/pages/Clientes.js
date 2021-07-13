@@ -1,7 +1,20 @@
 import { useState, useEffect } from 'react'
 import Backend from '../services/Backend'
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
+import { makeStyles } from '@material-ui/core/styles'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import Paper from '@material-ui/core/Paper'
+
+const useStyles = makeStyles({ table: { minWidth: 650 }})
 
 const ClientesView = () => {
+  const classes = useStyles()
   const [alterID, setAlterID] = useState(0)
   const [errorMsg, setErrorMsg] = useState('')
   const [clientes, setClientes] = useState([])
@@ -80,55 +93,45 @@ const ClientesView = () => {
       <span className="erroMsg">{errorMsg}</span> 
 
       <div className="form form-add">
-        <div>
-          <label className="inputLabel">Código: </label>
-          <input className="input" value={novoCodigo} onChange={(e) => setNovoCodigo(e.target.value)} />
-        </div>
-        <div>
-          <label className="inputLabel">Nome: </label>
-          <input className="input" value={novoNome} onChange={(e) => setNovoNome(e.target.value)} />
-        </div>
-        <span className="btn addBtn" onClick={addCliente}>Adicionar</span>
+        <TextField label="Código" value={novoCodigo} onChange={(e) => setNovoCodigo(e.target.value)} />
+        <TextField label="Nome" value={novoNome} onChange={(e) => setNovoNome(e.target.value)} />
+        <Button variant="outlined" color="primary" onClick={addCliente}>Adicionar</Button>
       </div>
+
       <div className="form form-alteracao">
-        <div>
-          <label className="inputLabel">ID: </label>
-          <input className="input" value={alterID} readOnly={true} />
-        </div>
-        <div>
-          <label className="inputLabel">Código: </label>
-          <input className="input" value={novoCodigo} onChange={(e) => setNovoCodigo(e.target.value)} />
-        </div>
-        <div>
-          <label className="inputLabel">Nome: </label>
-          <input className="input" value={novoNome} onChange={(e) => setNovoNome(e.target.value)} />
-        </div>
-        <span className="btn altBtn" onClick={alterarCliente}>Confirmar</span>
+        <TextField label="ID" value={alterID} disabled={true} />
+        <TextField label="Código" value={novoCodigo} onChange={(e) => setNovoCodigo(e.target.value)} />
+        <TextField label="Nome" value={novoNome} onChange={(e) => setNovoNome(e.target.value)} />
+        <Button variant="outlined" color="primary" onClick={alterarCliente}>Confirmar</Button>
       </div>
       <hr />
+
       {clientes && clientes.length > 0 ?
-        <table>
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Cliente</th>
-            </tr>
-          </thead>
-          <tbody>
-            {clientes.map(cliente => {
-              return (
-                <tr key={cliente.id}>
-                  <td>{cliente.codigo}</td>
-                  <td>{cliente.nome}</td>
-                  <td className="options">
-                    <span className="btn altBtn" onClick={() => ativarAlteracao(cliente)}>Alterar</span>
-                    <span className="btn delBtn" onClick={() => deletarCliente(cliente.id)}>Excluir</span>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Código</TableCell>
+                <TableCell>Cliente</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {clientes.map(cliente => {
+                return (
+                  <TableRow  key={cliente.id}>
+                    <TableCell>{cliente.codigo}</TableCell>
+                    <TableCell>{cliente.nome}</TableCell>
+                    <TableCell style={{ display: 'flex', gap: '12px'}}>
+                      <Button variant="outlined" color="primary" onClick={() => ativarAlteracao(cliente)}>Alterar</Button>
+                      <Button variant="outlined" color="secondary" onClick={() => deletarCliente(cliente.id)}>Excluir</Button>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       : null}
     </div>
   )

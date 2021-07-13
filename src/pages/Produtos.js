@@ -1,7 +1,20 @@
 import { useState, useEffect } from 'react'
 import Backend from '../services/Backend'
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
+import { makeStyles } from '@material-ui/core/styles'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import Paper from '@material-ui/core/Paper'
+
+const useStyles = makeStyles({ table: { minWidth: 650 }})
 
 const ProdutosView = () => {
+  const classes = useStyles()
   const [alterID, setAlterID] = useState(0)
   const [errorMsg, setErrorMsg] = useState('')
   const [produtos, setProdutos] = useState([])
@@ -75,60 +88,50 @@ const ProdutosView = () => {
 
   return (
     <div className="container">
-      <h1>Produtos</h1>
+      <h1>Clientes</h1>
       <hr />
       <span className="erroMsg">{errorMsg}</span> 
 
       <div className="form form-add">
-        <div>
-          <label className="inputLabel">Nome: </label>
-          <input className="input" value={novoNome} onChange={(e) => setNovoNome(e.target.value)} />
-        </div>
-        <div>
-          <label className="inputLabel">Valor: </label>
-          <input className="input" value={novoValor} onChange={(e) => setNovoValor(e.target.value)} />
-        </div>
-        <span className="btn addBtn" onClick={addProduto}>Adicionar</span>
+        <TextField label="Nome" value={novoNome} onChange={(e) => setNovoNome(e.target.value)} />
+        <TextField label="Valor" value={novoValor} onChange={(e) => setNovoValor(e.target.value)} />
+        <Button variant="outlined" color="primary" onClick={addProduto}>Adicionar</Button>
       </div>
+
       <div className="form form-alteracao">
-        <div>
-          <label className="inputLabel">ID: </label>
-          <input className="input" value={alterID} readOnly={true} />
-        </div>
-        <div>
-          <label className="inputLabel">Nome: </label>
-          <input className="input" value={novoNome} onChange={(e) => setNovoNome(e.target.value)} />
-        </div>
-        <div>
-          <label className="inputLabel">Valor: </label>
-          <input className="input" value={novoValor} onChange={(e) => setNovoValor(e.target.value)} />
-        </div>
-        <span className="btn altBtn" onClick={alterarProduto}>Confirmar</span>
+        <TextField label="ID" value={alterID} disabled={true} />
+        <TextField label="Nome" value={novoNome} onChange={(e) => setNovoNome(e.target.value)} />
+        <TextField label="Valor" value={novoValor} onChange={(e) => setNovoValor(e.target.value)} />
+        <Button variant="outlined" color="primary" onClick={alterarProduto}>Confirmar</Button>
       </div>
       <hr />
+
       {produtos && produtos.length > 0 ?
-        <table>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Valor</th>
-            </tr>
-          </thead>
-          <tbody>
-            {produtos.map(produto => {
-              return (
-                <tr key={produto.id}>
-                  <td>{produto.nome}</td>
-                  <td>R$ {produto.valor}</td>
-                  <td className="options">
-                    <span className="btn altBtn" onClick={() => ativarAlteracao(produto)}>Alterar</span>
-                    <span className="btn delBtn" onClick={() => deletarProduto(produto.id)}>Excluir</span>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Nome</TableCell>
+                <TableCell>Valor</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {produtos.map(produto => {
+                return (
+                  <TableRow  key={produto.id}>
+                    <TableCell>{produto.nome}</TableCell>
+                    <TableCell>R$ {produto.valor}</TableCell>
+                    <TableCell style={{ display: 'flex', gap: '12px'}}>
+                      <Button variant="outlined" color="primary" onClick={() => ativarAlteracao(produto)}>Alterar</Button>
+                      <Button variant="outlined" color="secondary" onClick={() => deletarProduto(produto.id)}>Excluir</Button>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       : null}
     </div>
   )

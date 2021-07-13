@@ -1,10 +1,53 @@
 import { useState, useEffect } from 'react'
 import Backend from '../services/Backend'
+import Button from '@material-ui/core/Button'
+import { makeStyles } from '@material-ui/core/styles'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import Paper from '@material-ui/core/Paper'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+
+const useStyles = makeStyles((theme) => ({ 
+  root: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper,
+    position: 'relative',
+    overflow: 'auto',
+    maxHeight: 300,
+    borderRadius: 12,
+  },
+  listSection: { backgroundColor: 'inherit' },
+  ul: {
+    backgroundColor: 'inherit',
+    padding: 0
+  },
+  table: { minWidth: 650 },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120
+  },
+  selectEmpty: { marginTop: theme.spacing(2) },
+}))
 
 const FacturasView = () => {
+  const classes = useStyles()
   const [errorMsg, setErrorMsg] = useState('')
+  const [cliente, setCliente] = useState(null)
   const [clientes, setClientes] = useState([])
   const [produtosSelecionados, setProdutosSelecionados] = useState([])
+  const [produto, setProduto] = useState(null)
   const [produtos, setProdutos] = useState([])
   const [total, setTotal] = useState(0)
   const [facturas, setFacturas] = useState([])
@@ -36,23 +79,25 @@ const FacturasView = () => {
     .catch(() => { setErrorMsg('Erro ao carregar lista de clientes.') })
   }
 
-  const getProduto = async (id) => {
-    return await Backend.get(`/produto/get/${id}`).then(res => res.data)
-  }
+  // const getProduto = async (id) => {
+  //   return await Backend.get(`/produto/get/${id}`).then(res => res.data)
+  // }
 
   const adicionarProduto = async () => {
-    const produto = await getProduto(document.getElementById('list-produtos').value)
+    // const produto = await getProduto(document.getElementById('list-produtos').value)
     setTotal(total + produto.valor)
     setProdutosSelecionados([...produtosSelecionados, produto])
+    console.log(produtosSelecionados)
   }
 
   const addFactura = async () => {
     await Backend.post('/factura/create', {
-      id_cliente: document.getElementById('list-cliente').value,
+      id_cliente: cliente,
       produtos: String(produtosSelecionados.map(produtos => produtos.id)),
       valor_total : total
     }).then(res => setFacturas(res.data))
     setProdutosSelecionados([])
+    setTotal(0)
   }
 
   useEffect(() => {
@@ -60,58 +105,72 @@ const FacturasView = () => {
     getClientes()
     getFacturas()
   }, [])
+  
   return (
     <div className="container">
       <h1>Facturas</h1>
       <hr />
       <span className="erroMsg">{errorMsg}</span> 
-      <div>
-        <div>
-          <label className="inputLabel">Cliente: </label>
-          <select id="list-cliente">
-            {clientes.map(cliente => { return (<option key={cliente.id} value={cliente.id}>{cliente.nome}</option>)})}
-          </select>
-        </div>
 
-        <div>
-          <label className="inputLabel">Produto: </label>
-          <select id="list-produtos">
-            {produtos.map(produto => { return (<option key={produto.id} value={produto.id}>{produto.nome}</option>)})}
-          </select> - <span onClick={adicionarProduto}>Adicionar Produto</span>
-        </div>
-        <hr />
+      <div className="form">
+        <FormControl className={classes.formControl}>
+          <InputLabel>Cliente</InputLabel>
+          <Select value={cliente} onChange={(e) => setCliente(e.target.value)}>
+            {clientes.map(cliente => { return (<MenuItem key={cliente.id} value={cliente.id}>{cliente.nome}</MenuItem>)})}
+          </Select>
+        </FormControl>
 
-        <div>
-          <label className="inputLabel">Produtos: (Total: R$ {total}) </label>
-          <ul>
-            {produtosSelecionados.map(produto => { return (<li key={produto.id}>{produto.nome} - R$ {produto.valor}</li>) })}
-          </ul>
-        </div>
-        <span onClick={addFactura}>Finalizar Factura</span>
-        <hr />
+        <FormControl className={classes.formControl}>
+          <InputLabel>Produto</InputLabel>
+          <Select value={produto} onChange={(e) => setProduto(e.target.value)}>
+            {produtos.map(produto => { return (<MenuItem key={produto.id} value={produto}>{produto.nome}</MenuItem>)})}
+          </Select>
+        </FormControl>
+
+        <Button variant="outlined" color="primary" onClick={adicionarProduto}>Adicionar Produto</Button>
       </div>
+      <hr />
 
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Valor</th>
-            <th>Data</th>
-          </tr>
-        </thead>
-        <tbody>
-          {facturas.map(factura => { return (
-            <tr>
-              <td>{factura.id}</td>
-              <td>{factura.nome}</td>
-              <td>R$ {factura.valor_total}</td>
-              <td>{factura.created_at.split('T')[0]}</td>
-            </tr>
-          )})}
-        </tbody>
-      </table>
-      
+      <div>
+        <List className={classes.root} subheader={<li />}>
+        <ListSubheader>Total Factura - R$ {total}</ListSubheader>
+          {produtosSelecionados.map(produto => { 
+            return (
+              <ListItem key={produto.id}>
+                <ListItemText primary={`${produto.nome} - R$ ${produto.valor}`} />
+              </ListItem>
+            )})}
+        </List>
+      </div>< br/>
+      <Button variant="outlined" color="primary" onClick={addFactura}>Finalizar Factura</Button>
+      <hr />
+
+      {facturas && facturas.length > 0 ?
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Cliente</TableCell>
+                <TableCell>Valor</TableCell>
+                <TableCell>Data</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {facturas.map(factura => {
+                return (
+                  <TableRow key={factura.id}>
+                    <TableCell>{factura.id}</TableCell>
+                    <TableCell>{factura.nome}</TableCell>
+                    <TableCell>R$ {factura.valor_total}</TableCell>
+                    <TableCell>{factura.created_at.split('T')[0].split('-').reverse().join('/')}</TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      : null}
     </div>
   )
 }

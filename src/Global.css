@@ -1,63 +1,45 @@
+body, html {
+  margin: 0;
+  height: 100%;
+  font-family: 'Trebuchet MS', sans-serif;
+  overflow: auto;
+  background-color: rgb(219, 236, 236);
+}
+
+hr {
+  color: #3F51B5;
+}
+
 .container {
-  margin: 7px;
+  margin: 15px 80px;
 }
 
 .container h1 {
-  color: rgb(30, 136, 100);
+  color: #3F51B5;
+}
+
+.erroMsg {
   font-weight: 700;
+  font-size: 24px;
+  color: red;
+  text-decoration: underline;
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.grafico-container {
+  border: 10px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 15px;
 }
 
 .form {
   display: flex;
   flex-direction: row;
-  gap: 25px;
-}
-
-.inputLabel {
-  font-weight: bold;
-}
-
-.input {
-  padding: 3px 1px;
-}
-
-.btn {
-  display: flex;
-  color: white;
-  padding: 5px 12px;
-  border-radius: 4px;
-  border-color: white;
-}
-
-.addBtn {
-  background-color: green;
-}
-
-.altBtn {
-  background-color: blue;
-}
-
-.delBtn {
-  background-color: red;
-}
-
-.addBtn:hover, .altBtn:hover, .delBtn:hover {
-  cursor: pointer;
-  filter: opacity(0.9);
-}
-
-.erroMsg {
-  font-weight: bold;
-  font-size: 23px;
-  color: red;
-}
-
-table, table thead tr th, table tbody tr td {
-  padding: 4px;
-}
-
-.options {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
+  gap: 15px;
 }
