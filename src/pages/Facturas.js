@@ -13,10 +13,10 @@ import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import ListSubheader from '@material-ui/core/ListSubheader'
 
 const useStyles = makeStyles((theme) => ({ 
   root: {
@@ -79,12 +79,7 @@ const FacturasView = () => {
     .catch(() => { setErrorMsg('Erro ao carregar lista de clientes.') })
   }
 
-  // const getProduto = async (id) => {
-  //   return await Backend.get(`/produto/get/${id}`).then(res => res.data)
-  // }
-
   const adicionarProduto = async () => {
-    // const produto = await getProduto(document.getElementById('list-produtos').value)
     setTotal(total + produto.valor)
     setProdutosSelecionados([...produtosSelecionados, produto])
     console.log(produtosSelecionados)
